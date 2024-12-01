@@ -48,7 +48,7 @@ function validateTone(tone: string | undefined): string {
 }
 
 function generatePrompt(text: string, tone: string) {
-  const examples = {
+  const examples: Record<string, string> = {
     casual: `
 Example:
 Original: "Exercise is essential for maintaining physical and mental health."
@@ -71,7 +71,7 @@ Formal: "Strict adherence to the guidelines is imperative to achieve optimal res
 `,
   };
 
-  const toneDescription = {
+  const toneDescription: Record<string, string> = {
     casual: 'Rewrite this text to sound casual and friendly.',
     professional: 'Rewrite this text to maintain professionalism and precision.',
     conversational: 'Rewrite this text to sound like a natural conversation.',
@@ -79,8 +79,11 @@ Formal: "Strict adherence to the guidelines is imperative to achieve optimal res
     natural: 'Rewrite this text to maintain its original meaning and clarity.',
   };
 
-  const example = examples[tone] || '';
-  const description = toneDescription[tone] || toneDescription['natural'];
+  // Use type assertion to specify that `tone` is one of the valid keys
+  const example = examples[tone as keyof typeof examples] || '';
+  const description =
+    toneDescription[tone as keyof typeof toneDescription] ||
+    toneDescription['natural'];
 
   return `${description} Make sure the meaning stays intact, and the tone feels appropriate. 
 
