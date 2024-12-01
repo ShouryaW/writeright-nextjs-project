@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 
+// Initialize OpenAI API
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
 });
@@ -22,10 +23,12 @@ export async function POST(request: Request) {
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 800,
-      temperature: 0.7,
+      temperature: 0.7, // Balances creativity and consistency
     });
 
-    const humanizedText = postProcess(response.choices[0].message.content.trim());
+    // Safely access response content
+    const content = response.choices[0]?.message?.content?.trim();
+    const humanizedText = content ? postProcess(content) : 'No response from AI';
 
     return NextResponse.json({ humanizedText });
   } catch (error: unknown) {
