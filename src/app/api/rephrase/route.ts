@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Please provide text to rewrite.' }, { status: 400 });
     }
 
-    let prompt = `Rewrite this text: ${text}`;
+    let prompt = `Rewrite this text: ${text}`; 
 
     switch (mode) {
       case 'creative':
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         break;
       case 'normal':
       default:
-        prompt = `Rewrite this text: ${text}`;
+        prompt = `Rewrite this text: ${text}`; 
         break;
     }
 
@@ -39,7 +39,10 @@ export async function POST(req: NextRequest) {
       temperature: 0.7,
     });
 
-    const rephrasedText = completion.choices[0].message.content.trim();
+    // Safely access the content
+    const rephrasedText =
+      completion.choices[0]?.message?.content?.trim() || 'No response from AI';
+
     return NextResponse.json({ rephrasedText });
   } catch (error: unknown) {
     if (error instanceof Error) {
