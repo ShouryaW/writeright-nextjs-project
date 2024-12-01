@@ -3,7 +3,6 @@
 import { NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 
-// Initialize OpenAI API
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
 });
@@ -23,14 +22,16 @@ export async function POST(request: Request) {
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 800,
-      temperature: 0.7, // Balances creativity and consistency
+      temperature: 0.7,
     });
 
     const humanizedText = postProcess(response.choices[0].message.content.trim());
 
     return NextResponse.json({ humanizedText });
-  } catch (error: any) {
-    console.error('API Error:', error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('API Error:', error.message);
+    }
     return NextResponse.json(
       { error: 'Failed to process the request.' },
       { status: 500 }
@@ -38,13 +39,11 @@ export async function POST(request: Request) {
   }
 }
 
-// Validate and default the tone input
 function validateTone(tone: string | undefined): string {
   const validTones = ['casual', 'professional', 'conversational', 'formal'];
   return validTones.includes(tone ?? '') ? tone! : 'natural';
 }
 
-// Generate a refined prompt with few-shot examples
 function generatePrompt(text: string, tone: string) {
   const examples = {
     casual: `
@@ -89,7 +88,6 @@ Original Text:
   `;
 }
 
-// Post-process output to correct any formatting issues
 function postProcess(text: string) {
   return text
     .replace(/- /g, '\n- ') // Ensure bullet points are formatted correctly

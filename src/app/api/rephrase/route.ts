@@ -1,3 +1,5 @@
+// src/app/api/rephrase/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 
@@ -13,8 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Please provide text to rewrite.' }, { status: 400 });
     }
 
-    // Generate a different prompt based on the selected mode
-    let prompt = `Rewrite this text: ${text}`; // Default prompt for "Normal" mode
+    let prompt = `Rewrite this text: ${text}`;
 
     switch (mode) {
       case 'creative':
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
         break;
       case 'normal':
       default:
-        prompt = `Rewrite this text: ${text}`; // Use normal mode by default
+        prompt = `Rewrite this text: ${text}`;
         break;
     }
 
@@ -40,7 +41,10 @@ export async function POST(req: NextRequest) {
 
     const rephrasedText = completion.choices[0].message.content.trim();
     return NextResponse.json({ rephrasedText });
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('API Error:', error.message);
+    }
     return NextResponse.json(
       { error: 'Failed to connect to the rephrasing service.' },
       { status: 500 }

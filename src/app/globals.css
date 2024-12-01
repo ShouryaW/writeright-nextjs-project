@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-/* Ensure the body fills the entire screen */
+
 html, body {
   height: 100%;
   width: 100%;
@@ -14,7 +14,7 @@ html, body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* General layout for the main container */
+
 .main-content {
   min-height: 100vh;
   display: flex;
@@ -24,7 +24,7 @@ html, body {
   padding: 20px;
 }
 
-/* Header styling for the app */
+
 .header {
   width: 100%;
   background: linear-gradient(145deg, #1E1E1E, #2A2A2A);
@@ -38,7 +38,7 @@ html, body {
   z-index: 1000;
 }
 
-/* Header logo styling */
+
 .logo {
   font-weight: 600;
   font-size: 1.75rem;
@@ -52,13 +52,13 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* Navbar styling */
+
 .navbar {
   display: flex;
   gap: 25px;
 }
 
-/* Navbar links with larger, bold text */
+
 .navbar a {
   color: #FFFFFF; /* White color for readability */
   text-decoration: none;
@@ -68,6 +68,6 @@ html, body {
 }
 
 .navbar a:hover {
-  color: #B2E6D9; /* Light mint hover effect */
+  color: #B2E6D9; 
   transform: translateY(-2px);
 }

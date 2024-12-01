@@ -28,8 +28,10 @@ export async function POST(request: Request) {
     const correctedText = response.choices[0].message.content.trim();
 
     return NextResponse.json({ originalText: text, correctedText });
-  } catch (error: any) {
-    console.error('API Error:', error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('API Error:', error.message);
+    }
     return NextResponse.json(
       { error: 'Failed to process the request.' },
       { status: 500 }

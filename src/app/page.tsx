@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import styles from './styles/home.module.css'; // Correct CSS module import
+import styles from './styles/home.module.css'; 
 import { ClipLoader } from 'react-spinners';
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
   const [rephrasedText, setRephrasedText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('normal'); // Default mode
+  const [mode, setMode] = useState('normal'); 
 
   const handleRephrase = async () => {
     if (!inputText) {
@@ -35,8 +35,10 @@ export default function Home() {
       }
 
       setRephrasedText(data.rephrasedText);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
