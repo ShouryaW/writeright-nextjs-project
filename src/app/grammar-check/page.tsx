@@ -1,18 +1,22 @@
-// src/app/grammar-check/page.tsx
-
 'use client';
 
 import { useState } from 'react';
 import styles from '../styles/home.module.css';
 import { ClipLoader } from 'react-spinners';
-import { diffWords } from 'diff'; // No changes required here
+import { diffWords } from 'diff'; // Correctly typed as per declarations.d.ts
+
+interface DiffPart {
+  value: string;
+  added?: boolean;
+  removed?: boolean;
+}
 
 export default function GrammarCheckPage() {
-  const [inputText, setInputText] = useState('');
-  const [correctedText, setCorrectedText] = useState('');
-  const [diffResult, setDiffResult] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [inputText, setInputText] = useState<string>('');
+  const [correctedText, setCorrectedText] = useState<string>('');
+  const [diffResult, setDiffResult] = useState<DiffPart[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   const handleGrammarCheck = async () => {
     if (!inputText) {
@@ -32,10 +36,10 @@ export default function GrammarCheckPage() {
         body: JSON.stringify({ text: inputText }),
       });
 
-      const data = await response.json();
+      const data: { originalText: string; correctedText: string } = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong.');
+        throw new Error(data.originalText || 'Something went wrong.');
       }
 
       setCorrectedText(data.correctedText);
@@ -43,9 +47,10 @@ export default function GrammarCheckPage() {
       // Generate differences using diffWords
       const diff = diffWords(data.originalText, data.correctedText);
       setDiffResult(diff);
-    } catch (err: any) {
-      console.error('Fetch error:', err.message);
-      setError(err.message);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      console.error('Fetch error:', errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
