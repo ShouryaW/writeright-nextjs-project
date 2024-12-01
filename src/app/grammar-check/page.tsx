@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import styles from '../styles/home.module.css';
 import { ClipLoader } from 'react-spinners';
-import { diffWords } from 'diff'; // Import diffing library
+import { diffWords } from 'diff';
 
 export default function GrammarCheckPage() {
   const [inputText, setInputText] = useState('');
@@ -43,9 +43,11 @@ export default function GrammarCheckPage() {
       // Generate differences using diffWords
       const diff = diffWords(data.originalText, data.correctedText);
       setDiffResult(diff);
-    } catch (err: any) {
-      console.error('Fetch error:', err.message);
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Fetch error:', err.message);
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }

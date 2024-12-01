@@ -37,9 +37,11 @@ export default function HumanizerPage() {
       }
 
       setHumanizedText(data.humanizedText);
-    } catch (err: any) {
-      console.error('Fetch error:', err.message);
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Fetch error:', err.message);
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
