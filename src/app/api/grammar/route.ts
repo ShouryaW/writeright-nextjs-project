@@ -25,7 +25,9 @@ export async function POST(request: Request) {
       max_tokens: 500,
     });
 
-    const correctedText = response.choices[0].message.content.trim();
+    // Safely access the content
+    const correctedText =
+      response.choices[0]?.message?.content?.trim() || 'No response from AI';
 
     return NextResponse.json({ originalText: text, correctedText });
   } catch (error: unknown) {
