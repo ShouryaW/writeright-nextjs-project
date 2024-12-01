@@ -1,31 +1,33 @@
+// src/app/humanizer/page.tsx
+
 'use client';
 
 import { useState } from 'react';
-import styles from './styles/home.module.css'; // Correct CSS module import
+import styles from '../styles/home.module.css';
 import { ClipLoader } from 'react-spinners';
 
-export default function Home() {
+export default function HumanizerPage() {
   const [inputText, setInputText] = useState('');
-  const [rephrasedText, setRephrasedText] = useState('');
+  const [humanizedText, setHumanizedText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('normal'); // Default mode
+  const [tone, setTone] = useState('casual'); // Default tone
 
-  const handleRephrase = async () => {
+  const handleHumanize = async () => {
     if (!inputText) {
-      setError('Please enter text to rewrite.');
+      setError('Please enter text to humanize.');
       return;
     }
 
     setLoading(true);
     setError('');
-    setRephrasedText('');
+    setHumanizedText('');
 
     try {
-      const response = await fetch('/api/rephrase', {
+      const response = await fetch('/api/humanizer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: inputText, mode }),
+        body: JSON.stringify({ text: inputText, tone }),
       });
 
       const data = await response.json();
@@ -34,8 +36,9 @@ export default function Home() {
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      setRephrasedText(data.rephrasedText);
+      setHumanizedText(data.humanizedText);
     } catch (err: any) {
+      console.error('Fetch error:', err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -44,33 +47,33 @@ export default function Home() {
 
   const handleClear = () => {
     setInputText('');
-    setRephrasedText('');
+    setHumanizedText('');
     setError('');
   };
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>WriteRight Bot ✍️</h1>
+        <h1>AI Humanizer 🤖 → 👨‍💻</h1>
       </header>
 
       <div className={styles.selector}>
-        <label htmlFor="mode">Select Rewrite Mode:</label>
+        <label htmlFor="tone">Select Tone:</label>
         <select
-          id="mode"
-          value={mode}
-          onChange={(e) => setMode(e.target.value)}
+          id="tone"
+          value={tone}
+          onChange={(e) => setTone(e.target.value)}
         >
-          <option value="normal">Normal</option>
-          <option value="creative">Creative</option>
+          <option value="casual">Casual</option>
+          <option value="professional">Professional</option>
+          <option value="conversational">Conversational</option>
           <option value="formal">Formal</option>
-          <option value="concise">Concise</option>
         </select>
       </div>
 
       <textarea
         className={styles.textarea}
-        placeholder="Enter text to rewrite..."
+        placeholder="Enter text to humanize..."
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
@@ -78,10 +81,10 @@ export default function Home() {
       <div className={styles.controls}>
         <button
           className={styles.button}
-          onClick={handleRephrase}
+          onClick={handleHumanize}
           disabled={loading}
         >
-          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : 'Rewrite'}
+          {loading ? <ClipLoader size={20} color="#FFFFFF" /> : 'Humanize'}
         </button>
         <button className={styles.clearButton} onClick={handleClear}>
           Clear
@@ -91,8 +94,8 @@ export default function Home() {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.output}>
-        <h2 className={styles.subtitle}>Rewritten Text</h2>
-        <p>{rephrasedText || 'Your rewritten text will appear here.'}</p>
+        <h2 className={styles.subtitle}>Humanized Text</h2>
+        <p>{humanizedText || 'Your humanized text will appear here.'}</p>
       </div>
     </div>
   );
